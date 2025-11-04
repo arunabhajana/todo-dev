@@ -27,7 +27,6 @@ const authUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  console.log('Register request body:', req.body);
   const { name, email, password } = req.body;
 
   const userExists = await User.findOne({ email });

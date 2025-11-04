@@ -16,8 +16,10 @@ const TodoList: React.FC = () => {
   const { user, logout } = useAuth();
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    if (user) {
+      fetchTasks();
+    }
+  }, [user]);
 
   const fetchTasks = async () => {
     try {
