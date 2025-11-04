@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { FiPlus, FiLogOut, FiTrash2, FiEdit2, FiSave, FiX, FiCheckCircle, FiSearch, FiCalendar, FiTag, FiFlag, FiClock } from 'react-icons/fi';
+import { FiPlus, FiLogOut, FiTrash2, FiEdit2, FiSave, FiX, FiCheckCircle, FiSearch, FiTag, FiFlag, FiClock } from 'react-icons/fi';
 
 interface Task {
   _id: string;
