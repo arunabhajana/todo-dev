@@ -27,11 +27,14 @@ const getTaskById = asyncHandler(async (req, res) => {
 // @route   POST /api/tasks
 // @access  Private
 const createTask = asyncHandler(async (req, res) => {
-  const { title, description } = req.body;
+  const { title, description, dueDate, category, priority } = req.body;
 
   const task = new Task({
     title,
     description,
+    dueDate: dueDate ? new Date(dueDate) : undefined,
+    category: category || 'Personal',
+    priority: priority || 'medium',
     user: req.user._id,
   });
 
@@ -43,7 +46,7 @@ const createTask = asyncHandler(async (req, res) => {
 // @route   PUT /api/tasks/:id
 // @access  Private
 const updateTask = asyncHandler(async (req, res) => {
-  const { title, description, completed } = req.body;
+  const { title, description, completed, dueDate, category, priority } = req.body;
 
   const task = await Task.findById(req.params.id);
 
@@ -51,6 +54,15 @@ const updateTask = asyncHandler(async (req, res) => {
     task.title = title;
     task.description = description;
     task.completed = completed;
+    if (dueDate !== undefined) {
+      task.dueDate = dueDate ? new Date(dueDate) : null;
+    }
+    if (category !== undefined) {
+      task.category = category;
+    }
+    if (priority !== undefined) {
+      task.priority = priority;
+    }
 
     const updatedTask = await task.save();
     res.json(updatedTask);
