@@ -175,7 +175,7 @@ todo-list/
 │   │   │   ├── Register.tsx
 │   │   │   ├── TodoList.tsx
 │   │   │   └── PrivateRoute.tsx
-│   │   ├── context/
+│   │   ├── context/ 
 │   │   │   └── AuthContext.tsx
 │   │   ├── App.tsx
 │   │   ├── App.css
