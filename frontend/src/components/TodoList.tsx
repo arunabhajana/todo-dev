@@ -21,7 +21,7 @@ const TodoList: React.FC = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/tasks', {
+      const response = await fetch('/api/tasks', {
         headers: {
           Authorization: `Bearer ${user?.token}`,
         },
@@ -36,7 +36,7 @@ const TodoList: React.FC = () => {
   const createTask = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/tasks', {
+      const response = await fetch('/api/tasks', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ const TodoList: React.FC = () => {
 
   const updateTask = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/tasks/${id}`, {
+      const response = await fetch(`/api/tasks/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ const TodoList: React.FC = () => {
 
   const deleteTask = async (id: string) => {
     try {
-      await fetch(`http://localhost:5000/api/tasks/${id}`, {
+      await fetch(`/api/tasks/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${user?.token}`,
@@ -89,7 +89,7 @@ const TodoList: React.FC = () => {
     const task = tasks.find(t => t._id === id);
     if (task) {
       try {
-        const response = await fetch(`http://localhost:5000/api/tasks/${id}`, {
+        const response = await fetch(`/api/tasks/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
