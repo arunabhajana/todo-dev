@@ -2,47 +2,33 @@ pipeline {
     agent any
 
     environment {
-        AWS_DEFAULT_REGION = 'ap-southeast-2'  
-        EC2_INSTANCE_ID = 'i-085edd702ccaae6bf'  
-        PROJECT_DIR = '/home/ec2-user/todo-dev'
+        EC2_USER = 'ubuntu'
+        EC2_HOST = '13.55.52.73' // replace with your EC2 Public IP or DNS
+        SSH_KEY_PATH = 'C:\\ProgramData\\Jenkins\\.jenkins\\Test.pem' // path to your private key on Jenkins
+        PROJECT_DIR = '/home/ubuntu/todo-dev'
         GIT_BRANCH = 'main'
     }
 
     triggers {
-        pollSCM('* * * * *') 
+        // Trigger every commit or every minute via SCM polling
+        pollSCM('* * * * *')
     }
 
     stages {
         stage('Checkout') {
             steps {
-                echo 'Fetching latest code from repository...'
+                echo 'Pulling latest code from GitHub...'
                 checkout scm
             }
         }
 
-        stage('Deploy on AWS EC2 via AWS CLI') {
-            environment {
-                AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
-                AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-            }
+        stage('Deploy to EC2 via SSH') {
             steps {
-                echo 'Deploying using AWS CLI and SSM from Windows...'
-
+                echo 'Deploying app to EC2 via SSH...'
                 bat """
-                    echo Getting EC2 public IP...
-                    for /f %%i in ('aws ec2 describe-instances --region ${AWS_DEFAULT_REGION} --instance-ids ${EC2_INSTANCE_ID} --query "Reservations[0].Instances[0].PublicIpAddress" --output text') do set EC2_PUBLIC_IP=%%i
-                    echo EC2 IP: %EC2_PUBLIC_IP%
-
-                    echo Sending SSM command to EC2...
-                    aws ssm send-command ^
-                        --region ${AWS_DEFAULT_REGION} ^
-                        --instance-ids ${EC2_INSTANCE_ID} ^
-                        --document-name "AWS-RunShellScript" ^
-                        --comment "Automated Deployment via Jenkins" ^
-                        --parameters "{\\"commands\\":[\\"cd ${PROJECT_DIR}\\", \\"git pull origin ${GIT_BRANCH}\\", \\"docker-compose build --no-cache\\", \\"docker-compose up -d\\"]}" ^
-                        --output text
-
-                    echo ✅ Deployment command sent successfully!
+                    echo Connecting to EC2...
+                    plink -i "${SSH_KEY_PATH}" -batch ${EC2_USER}@${EC2_HOST} ^
+                    "cd ${PROJECT_DIR} && git pull origin ${GIT_BRANCH} && docker-compose build --no-cache && docker-compose up -d"
                 """
             }
         }
@@ -50,7 +36,7 @@ pipeline {
 
     post {
         success {
-            echo '🎉 Deployment command sent to EC2 successfully!'
+            echo '✅ Deployment completed successfully on EC2!'
         }
         failure {
             echo '❌ Deployment failed — check Jenkins logs for details.'
