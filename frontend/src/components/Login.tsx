@@ -28,7 +28,7 @@ const Login: React.FC = () => {
         <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-indigo-400/30 blur-3xl" />
 
         <div className="relative p-8">
-          <h2 className="text-2xl font-semibold tracking-tight text-white">Login</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-white">Login's</h2>
           {error && (
             <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
               {error}
