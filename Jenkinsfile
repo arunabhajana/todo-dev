@@ -10,7 +10,7 @@ pipeline {
 
         // --- SSH Key Path (on Jenkins Windows host) ---
         // Use your actual .ppk or .pem key path
-        SSH_KEY_PATH = 'C:\\ProgramData\\Jenkins\\.jenkins\\Test.pem'
+        SSH_KEY_PATH = 'C:\\ProgramData\\Jenkins\\.jenkins\\Test.ppk'
 
         // --- Full path to PuTTY's plink.exe ---
         PLINK_PATH = 'C:\\Program Files\\PuTTY\\plink.exe'
