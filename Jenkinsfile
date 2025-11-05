@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     environment {
-        AWS_DEFAULT_REGION = 'ap-southeast-2'  // Your AWS region
-        EC2_INSTANCE_ID = 'i-085edd702ccaae6bf'  // Your EC2 ID
+        AWS_DEFAULT_REGION = 'ap-southeast-2'  
+        EC2_INSTANCE_ID = 'i-085edd702ccaae6bf'  
         PROJECT_DIR = '/home/ec2-user/todo-app'
         GIT_BRANCH = 'main'
     }
 
     triggers {
-        pollSCM('* * * * *') // or use webhook trigger
+        pollSCM('* * * * *') 
     }
 
     stages {
