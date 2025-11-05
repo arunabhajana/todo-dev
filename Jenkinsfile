@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         AWS_DEFAULT_REGION = 'ap-south-1'
-        EC2_INSTANCE_ID = '<YOUR_INSTANCE_ID>'
+        EC2_INSTANCE_ID = 'i-085edd702ccaae6bf'
         PROJECT_DIR = '/home/ec2-user/todo-app'
         GIT_BRANCH = 'main'
     }
