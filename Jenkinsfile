@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     environment {
-        AWS_DEFAULT_REGION = 'ap-southeast-2'
-        EC2_INSTANCE_ID = 'i-085edd702ccaae6bf'
+        AWS_DEFAULT_REGION = 'ap-southeast-2'  // Your AWS region
+        EC2_INSTANCE_ID = 'i-085edd702ccaae6bf'  // Your EC2 ID
         PROJECT_DIR = '/home/ec2-user/todo-app'
         GIT_BRANCH = 'main'
     }
 
     triggers {
-        pollSCM('* * * * *')
+        pollSCM('* * * * *') // or use webhook trigger
     }
 
     stages {
@@ -27,18 +27,22 @@ pipeline {
             }
             steps {
                 echo 'Deploying using AWS CLI and SSM from Windows...'
+
                 bat """
                     echo Getting EC2 public IP...
-                    for /f %%i in ('aws ec2 describe-instances --instance-ids ${EC2_INSTANCE_ID} --query "Reservations[0].Instances[0].PublicIpAddress" --output text') do set EC2_PUBLIC_IP=%%i
+                    for /f %%i in ('aws ec2 describe-instances --region ${AWS_DEFAULT_REGION} --instance-ids ${EC2_INSTANCE_ID} --query "Reservations[0].Instances[0].PublicIpAddress" --output text') do set EC2_PUBLIC_IP=%%i
                     echo EC2 IP: %EC2_PUBLIC_IP%
 
-                    echo Sending SSM command...
+                    echo Sending SSM command to EC2...
                     aws ssm send-command ^
+                        --region ${AWS_DEFAULT_REGION} ^
                         --instance-ids ${EC2_INSTANCE_ID} ^
                         --document-name "AWS-RunShellScript" ^
                         --comment "Automated Deployment via Jenkins" ^
-                        --parameters commands="cd ${PROJECT_DIR}",commands="git pull origin ${GIT_BRANCH}",commands="docker-compose build --no-cache",commands="docker-compose up -d" ^
+                        --parameters "{\\"commands\\":[\\"cd ${PROJECT_DIR}\\", \\"git pull origin ${GIT_BRANCH}\\", \\"docker-compose build --no-cache\\", \\"docker-compose up -d\\"]}" ^
                         --output text
+
+                    echo ✅ Deployment command sent successfully!
                 """
             }
         }
@@ -46,10 +50,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Deployment completed successfully on AWS EC2!'
+            echo '🎉 Deployment command sent to EC2 successfully!'
         }
         failure {
-            echo '❌ Deployment failed. Check Jenkins logs for details.'
+            echo '❌ Deployment failed — check Jenkins logs for details.'
         }
     }
 }
